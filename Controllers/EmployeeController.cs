@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+
 namespace IBASEmployeeService.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
@@ -92,6 +95,25 @@ namespace IBASEmployeeService.Controllers
             }
         };
             return employees;
+        }
+
+                [HttpGet("GetEmployeesByDepartment/{departmentName}")]
+        public ActionResult<IEnumerable<Employee>> GetEmployeesByDepartment(string departmentName)
+        {
+            var employeesInDepartment = Get()
+                .Where(employee =>
+                    string.Equals(
+                        employee.Department?.Name,
+                        departmentName,
+                        StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (employeesInDepartment.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(employeesInDepartment);
         }
     }
 
